@@ -11,4 +11,5 @@
   - [ ] itow (integer to words)
   - [ ] data query from dict
   - [ ] writing into dict
+  - [ ] main
 - [ ] error handling
