@@ -10,7 +10,7 @@
 - [ ] functions
   - [ ] itow (integer to words)
   - [ ] atoi
-  - [ ] data query from dict
+  - [x] data query from dict
   - [ ] writing into dict
   - [ ] main
 - [ ] error handling
