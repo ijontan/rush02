@@ -2,3 +2,5 @@
    this is a list to help everyone keep track on 
    what function the others have made in this project
 */
+
+void	check_str_num(char *str);
