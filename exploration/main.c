@@ -4,7 +4,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
+/*
+	finding out how the fd part works in read(fd, buffer, cnt); 
+	using three test file and 3 int fd for the open(filename , mode); 
+	and 6 test interger to see if o can match ot 
+ */
 int main(void)
 {
 	int o1;
