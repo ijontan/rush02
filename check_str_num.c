@@ -6,7 +6,7 @@
 /*   By: jngerng <jngerng@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/03 20:06:23 by jngerng           #+#    #+#             */
-/*   Updated: 2022/09/03 20:11:53 by jngerng          ###   ########.fr       */
+/*   Updated: 2022/09/03 20:26:08 by jngerng          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@
 
 void	check_str_num(char *str)
 {
-	while(*str)
+	while (*str)
 	{
-		if(*str >= '0' && *str <= '9')
+		if (*str >= '0' && *str <= '9')
 			str ++;
 		else
 			return (0);
