@@ -9,6 +9,7 @@
   - [ ] the dict
 - [ ] functions
   - [ ] itow (integer to words)
+  - [ ] atoi
   - [ ] data query from dict
   - [ ] writing into dict
   - [ ] main
