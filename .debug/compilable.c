@@ -302,7 +302,7 @@ char	*get_teenn_via_digit(int n)
 	char	*output;
 
 	output = (char *)malloc(sizeof(char) * (3));
-	if (n > 10 && n < 20) //If no zeros to create
+	if (n > 0 && n < 10) //If no zeros to create
 	{
 		output[0] = '1';
 		output[1] = (n % 10) + 48;
@@ -366,19 +366,22 @@ void	str_to_word(char **a_digits, char **a_words, char *nb)
 					ft_putchar(' ');
 					ft_putstr(dict_get_word_from_digit(a_digits, a_words,
 								get_10n_via_digit(cd)));
+					ft_putchar(' ');
 				}
 				else if (cd % 3 == 2 && nb[nod - cd] != '1')
+				{
 					ft_putstr(dict_get_word_from_digit(a_digits, a_words,
 								get_tyn_via_digit(nb[nod - cd] - 48)));
-				else if (cd % 3 == 0 && nb[cd / 3 * 3] != '0')
+					ft_putchar(' ');
+				}
+				else if (cd % 3 == 0 && nb[nod - cd / 3 * 3] != '0')
 				{
 					ft_putchar(' ');
 					ft_putstr(dict_get_word_from_digit(a_digits, a_words,
 								"100"));
 					if (nb[nod - cd + 1] != '0' || nb[nod - cd + 2] != '0')
-						ft_putstr(" and");
+						ft_putstr(" and ");
 				}
-				ft_putchar(' ');
 			}
 		}
 		cd--;
