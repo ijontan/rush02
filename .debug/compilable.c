@@ -358,7 +358,7 @@ void	str_to_word(char **a_digits, char **a_words, char *nb)
 								get_n_via_digit(nb[nod - cd] - 48)));
 			if (region_has_value(nb, cd, nod) && cd != 0)
 			{
-				if (cd % 3 == 1)
+				if (cd % 3 == 1 && cd / 3 > 0)
 				{
 					if (nb[nod - cd - 1] == '1')
 						ft_putstr(dict_get_word_from_digit(a_digits, a_words,
@@ -370,7 +370,7 @@ void	str_to_word(char **a_digits, char **a_words, char *nb)
 				else if (cd % 3 == 2 && nb[nod - cd] != '1')
 					ft_putstr(dict_get_word_from_digit(a_digits, a_words,
 								get_tyn_via_digit(nb[nod - cd] - 48)));
-				else if (cd % 3 == 0)
+				else if (cd % 3 == 0 && nb[cd / 3 * 3] != '0')
 				{
 					ft_putchar(' ');
 					ft_putstr(dict_get_word_from_digit(a_digits, a_words,
