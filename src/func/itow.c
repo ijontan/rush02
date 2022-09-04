@@ -10,25 +10,22 @@ int	power(int nb, int pw)
 	return (value);
 }
 
-void	itow(unsigned long long nb)
+void	itow(char *nb)
 {
-	int					nod;
-	unsigned long long	temp;
-	char				*ones;
-	char				*tens;
-	char				*ftens;
-	char				*digits;
+	int		nod;
+	int		cd;
+	char	*ones;
+	char	*tens;
+	char	*ftens;
+	char	*digits;
 
 	nod = 0;
-	temp = nb;
-	while (temp > 0)
-	{
-		temp /= 10;
+	while (nb[nod])
 		nod++;
-	}
-	while (nod > 0)
+	cd = nod;
+	while (cd > 0)
 	{
-		if ((nb / power(10, nod)) != 0)
+		if (nb[nod - cd] != 0)
 			ones[nb / power(10, nod)];
 		if (region_has_value())
 		{
