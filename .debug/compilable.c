@@ -290,9 +290,10 @@ char	*get_n_via_digit(int n)
 	char	*output;
 
 	output = (char *)malloc(sizeof(char) * (2));
-	if (n <= 0) //If no zeros to create
+	if (n < 0) //If no zeros to create
 		return (0);
 	output[0] = n + 48;
+	output[1] = '\0';
 	return (output);
 }
 
@@ -305,6 +306,7 @@ char	*get_teenn_via_digit(int n)
 	{
 		output[0] = '1';
 		output[1] = (n % 10) + 48;
+		output[2] = '\0';
 	}
 	return (output);
 }
@@ -313,21 +315,24 @@ char	*get_tyn_via_digit(int n)
 	char	*output;
 
 	output = (char *)malloc(sizeof(char) * (3));
-	if (n > 10 && n < 20) //If no zeros to create
+	if (n > 0 && n < 10) //If no zeros to create
 	{
 		output[1] = '0';
-		output[0] = (n % 10) + 48;
+		output[0] = n + 48;
+		output[2] = '\0';
 	}
 	return (output);
 }
-int	region_has_value(char *nb, int cd)
+int	region_has_value(char *nb, int cd, int nod)
 {
 	int	region_position;
 
-	region_position = cd / 3 * 3; //starting position of the rigion checking
-	while (region_position < cd / 3 * 3 + 3)
+	region_position = (cd / 3) * 3 + 1;
+	//starting position of the rigion checking
+	while (region_position < (cd / 3 + 1) * 4)
 	{
-		if (nb[region_position] <= '9' && nb[region_position] >= '1')
+		if (nb[nod - region_position] <= '9' && nb[nod
+			- region_position] >= '1')
 			return (1);
 		region_position++;
 	}
@@ -335,9 +340,9 @@ int	region_has_value(char *nb, int cd)
 }
 void	str_to_word(char **a_digits, char **a_words, char *nb)
 {
-	int	nod;
 	int	cd;
 
+	int nod; //total
 	//int o=0;
 	nod = 0;
 	while (nb[nod])
@@ -346,31 +351,35 @@ void	str_to_word(char **a_digits, char **a_words, char *nb)
 	while (cd > 0)
 	{
 		if (nb[nod - cd] != 0)
+		{
 			if (!(cd % 3 == 1 && nb[nod - cd - 1] == '1'))
-				if (nb[nod - cd - 1] != '1')
+				if (cd % 3 != 2 && nb[nod - cd] != '0')
 					ft_putstr(dict_get_word_from_digit(a_digits, a_words,
 								get_n_via_digit(nb[nod - cd] - 48)));
-		if (region_has_value(nb, cd) && cd != 1)
-		{
-			ft_putchar(' ');
-			if (cd % 3 == 1)
+			if (region_has_value(nb, cd, nod) && cd != 0)
 			{
-				if (nb[nod - cd - 1] == '1')
+				if (cd % 3 == 1)
+				{
+					if (nb[nod - cd - 1] == '1')
+						ft_putstr(dict_get_word_from_digit(a_digits, a_words,
+									get_teenn_via_digit(nb[nod - cd] - 48)));
+					ft_putchar(' ');
 					ft_putstr(dict_get_word_from_digit(a_digits, a_words,
-								get_teenn_via_digit(nb[nod - cd] - 48)));
+								get_10n_via_digit(cd)));
+				}
+				else if (cd % 3 == 2 && nb[nod - cd] != '1')
+					ft_putstr(dict_get_word_from_digit(a_digits, a_words,
+								get_tyn_via_digit(nb[nod - cd] - 48)));
+				else if (cd % 3 == 0)
+				{
+					ft_putchar(' ');
+					ft_putstr(dict_get_word_from_digit(a_digits, a_words,
+								"100"));
+					if (nb[nod - cd + 1] != '0' || nb[nod - cd + 2] != '0')
+						ft_putstr(" and");
+				}
 				ft_putchar(' ');
-				ft_putstr(dict_get_word_from_digit(a_digits, a_words,
-							get_10n_via_digit(cd)));
 			}
-			else if (cd % 3 == 2 && nb[nod - cd] != '1')
-				ft_putstr(dict_get_word_from_digit(a_digits, a_words,
-							get_tyn_via_digit(nb[nod - cd] - 48)));
-			else
-			{
-				ft_putstr(dict_get_word_from_digit(a_digits, a_words, "100"));
-				ft_putstr(" and");
-			}
-			ft_putchar(' ');
 		}
 		cd--;
 	}

@@ -9,12 +9,12 @@
       "request": "launch",
       "name": "Debug",
       "program": "${fileDirname}/${fileBasenameNoExtension}",
-      "args": ["123456"],
+      "args": ["63800000"],
       "stopAtEntry": false,
       "environment": [],
       "externalConsole": false,
       "MIMode": "lldb",
-      //   "preLaunchTask": "C/C++: gcc build active file",
+      "preLaunchTask": "C/C++: gcc build active file",
       "cwd": "${workspaceFolder}"
     }
   ]
