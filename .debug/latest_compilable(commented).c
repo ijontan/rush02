@@ -2,16 +2,15 @@
 EASILY COMPILABLE VERSION TO RUN DEBUGGING ON & TO EXPLAIN TO TEAMMATES.
 */
 
-#include <fcntl.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <stdio.h>
+# include <fcntl.h>
 typedef struct s_map
 {
 	char	**a_digits;
 	char	**a_words;
 }			t_map;
-
 /*********************** BASIC STRING FUNCTIONS ***********************/
 void	ft_putchar(char a)
 {
@@ -71,19 +70,21 @@ int	ft_strlen(char *str)
 	return (i);
 }
 
-char	*ft_dup_until_char(char *str, char c)
+/*char	*ft_dup_until_char(char *str, char c)
 {
-	int		len;
+	int 	len;
 	char	*output;
 	int		i;
 
 	//Get length, how far are we copying
 	len = ft_strlen_char(str, c);
+
 	//Dedicate a heap memory - malloc for this array
 	output = (char *)malloc(sizeof(char) * (len + 1));
 	if (!(output))
 		return (NULL);
 	output[len] = '\0'; //Terminate string at last digit
+
 	//Now, store what we have
 	i = 0;
 	while (i < len)
@@ -91,6 +92,65 @@ char	*ft_dup_until_char(char *str, char c)
 		output[i] = str[i];
 		i++;
 	}
+	
+	//Return our string
+	return (output);
+}*/
+
+char	*ft_dup_while_num(char *str)
+{
+	int 	len;
+	char	*output;
+	int		i;
+
+	//Get length, how far are we copying
+	len = 0;
+	while (ft_in_str(str[len], "0123456789"))
+		len++;
+
+	//Dedicate a heap memory - malloc for this array
+	output = (char *)malloc(sizeof(char) * (len + 1));
+	if (!(output))
+		return (NULL);
+	output[len] = '\0'; //Terminate string at last digit
+
+	//Now, store what we have
+	i = 0;
+	while (i < len)
+	{
+		output[i] = str[i];
+		i++;
+	}
+	
+	//Return our string
+	return (output);
+}
+
+char	*ft_dup_while_printable(char *str)
+{
+	int 	len;
+	char	*output;
+	int		i;
+
+	//Get length, how far are we copying
+	len = 0;
+	while (str[len] >= 32 && str[len] <= 126)
+		len++;
+
+	//Dedicate a heap memory - malloc for this array
+	output = (char *)malloc(sizeof(char) * (len + 1));
+	if (!(output))
+		return (NULL);
+	output[len] = '\0'; //Terminate string at last digit
+
+	//Now, store what we have
+	i = 0;
+	while (i < len)
+	{
+		output[i] = str[i];
+		i++;
+	}
+	
 	//Return our string
 	return (output);
 }
@@ -106,12 +166,11 @@ int	ft_strcmp(char *s1, char *s2)
 }
 
 /* 
-//IF RUN INTO ERROR DURING COMPILATION TIME
-	- CAN USE THIS TO CREATE BLANK STRING
+//IF RUN INTO ERROR DURING COMPILATION TIME - CAN USE THIS TO CREATE BLANK STRING
 //WHERE I RETURNED NULL, WHEN NEED A STRING
-char	*empty_freeable_string(void)
+char *empty_freeable_string(void)
 {
-	char	*string;
+	char *string;
 
 	string = (char *)malloc(sizeof(char));
 	if (!string)
@@ -126,128 +185,168 @@ char	*empty_freeable_string(void)
 
 void	ft_error(void)
 {
-	ft_putstr("Error\n"); //Requested by pdf, write Error when it crash
-	exit(1);              //This is a built in function to terminate,
-							//		and throw 1 to show that it has error
+	ft_putstr("Error\n");  //Requested by pdf, write Error when it crash
+	exit(1);  //This is a built in function to terminate, and throw 1 to show that it has error
+}
+
+void	ft_dict_error(void)  //PDF says another set of 'Dict Error'
+{
+	ft_putstr("Dict Error\n");
+	exit(1);
 }
 
 void	ft_dev_error(char *str)
 {
-	ft_putstr(str);
+	ft_putstr(str); 
 	exit(1);
 }
 
-/*********************** DICTIONARY STORAGE FUNCTIONS ***********************/
-void	dict_free_2d_array(char **array)
+int	ft_2darray_len(char **str)
 {
-	int	i;
+	int i;
 
 	i = 0;
-	while (ft_strcmp(array[i], "\0") != 0)
+	while (ft_strcmp(str[i],"\0") != 0)
 	{
-		free(array[i]);
 		i++;
 	}
+	return (i);
+}
+
+/*********************** DICTIONARY STORAGE FUNCTIONS ***********************/
+void dict_free_2d_array(char **array)
+{
+	unsigned int i;
+
+	i = 0;
+	while (ft_strcmp(array[i],"\0") != 0)
+	{
+		// printf("%d Attempt free %p - %s\n", i, &array[i], array[i]);
+		free(array[i]);
+		i++;
+	} 
+	// printf("%d Attempt free null %p - %s\n", i, &array[i], "null itself");
 	free(array[i]);
+	// printf("Attempt free 2D array itself %p - %s\n", array, "2D array itself");
 	free(array);
 }
 
 void	dict_get_largest_len_row(char *file, int *maxstrlen, int *maxrow)
 {
 	int		fd;
-	char	buffer;
-	int		len;
+	char 	buffer;
+	int 	len;
 	int		row;
 
 	//Attempt to read file
 	fd = open(file, O_RDONLY);
 	if (fd == -1)
-		ft_error();
-	row = 0; //Get max rows/input from dictionary
-	len = 0; //Get max length of either left/right
-	//Read will loop through things char by char,
-	//	while still got data = 1; if reached end = 0;
+		ft_dict_error();
+	row = 0;  //Get max rows/input from dictionary
+	len = 0;  //Get max length of either left/right
+	
+	//Read will loop through things char by char, while still got data = 1; if reached end = 0;
 	while (read(fd, &buffer, 1))
 	{
-		len++;              //Save down how many extra characters there are
-		if (buffer == '\n') //Progress rows if there's line break
+		len++;  //Save down how many extra characters there are
+		if (buffer == '\n')  //Progress rows if there's line break
 			row++;
 	}
 	*maxstrlen = len;
+
 	//See if the whole dict ended with or without nextline '\n'
 	if (buffer == '\n')
-		*maxrow = row; //If we're at next line - means it terminated with \n
-	else
-		*maxrow = row + 1; // + 1 because last row no \n
+		*maxrow = row;  //If we're at next line - means it terminated with \n
+	else 
+		*maxrow = row + 1;  // + 1 because last row no \n
 	//Before exiting, we close file
 	close(fd);
 }
 
-char	**dict_store_array(char *file, int maxrow, unsigned int maxstrlen,
-		int storekey)
+char	*cr8_1d_arr(unsigned int len)
+{
+	char	*bf;
+
+	bf = (char *)malloc(sizeof(char) * (len + 1));
+	if (!(bf))
+		ft_error();
+	bf[len] = '\0';
+	return (bf);
+}
+
+char	**cr8_2d_arr(unsigned int row)
 {
 	char	**a_output;
-	int		fd;
-	char	buffer[maxstrlen + 1];
 
-	//This is for temporary storage as we loop through array
-	unsigned int i;   //For char by char
-	unsigned int row; //For row
-	//Create an allocation with the largest size for the 2D array [top > bottom]
-	a_output = (char **)malloc(sizeof(char *) * (maxrow + 1));
+	a_output = (char **)malloc(sizeof(char *) * (row + 1));
 	if (!(a_output))
-		return (NULL);
-	a_output[maxrow] = 0; //Add null terminator
-	//Clean up our stack's memory for buffer
-	i = 0;
-	while (i < maxstrlen)
-	{
-		buffer[i] = 0;
-		i++;
-	}
-	buffer[i] = 0; //Set null terminator
-	//Now, loop through dictionary to read file
-	fd = open(file, O_RDONLY);
-	if (fd == -1)
 		ft_error();
-	i = 0; //Restart main array space
-	row = 0;
-	if (!read(fd, buffer, maxstrlen)) //Read whole text into array
-		ft_error();                   //If cannot read file
-	while (*(buffer + i) != '\0')
+	a_output[row] = 0;
+	return (a_output);
+}
+
+char	**dict_store_array_value(char *file, int row, unsigned int len)
+{
+	char			**a_output;
+	char			*bf;
+	int				fd;
+	unsigned int	i;
+	unsigned int	r;
+
+	a_output = cr8_2d_arr(row);
+	bf = cr8_1d_arr(len);
+	i = 0;
+	r = 0;
+	fd = open(file, O_RDONLY);
+	read(fd, bf, len);
+	while (*(bf + i) != '\0')
 	{
-		while (*(buffer + i) != '\0' && !ft_in_str(*(buffer + i), "0123456789"))
-			//Loop until reach number
+		while (*(bf + i) != '\0' && !ft_in_str(*(bf + i), ":"))
 			i++;
-		if (storekey == 1)
-		{
-			a_output[row] = ft_dup_until_char(buffer + i, ':');
-			row++; //Progress row forward
-		}
-		while (*(buffer + i) != '\0' && !ft_in_str(*(buffer + i), ":"))
-			//Loop until reach :
+		i++;
+		while (*(bf + i) != '\0' && (*(bf + i) <= 32 || *(bf + i) > 126))
 			i++;
-		i++; //Skip the : itself
-		i++; //Skip the ' ' right after
-		if (storekey == 0)
-		{
-			a_output[row] = ft_dup_until_char(buffer + i, '\n');
-			row++; //Progress row forward
-		}
-		while (*(buffer + i) != '\0' && !ft_in_str(*(buffer + i), "\n"))
-			//Loop until endline
+		a_output[r++] = ft_dup_while_printable(bf + i);
+		while (*(bf + i) != '\0' && !ft_in_str(*(bf + i), "\n"))
 			i++;
 	}
-	//Before exiting, we close file
 	close(fd);
-	//Return the 2D array we attempted to store
+	free(bf);
+	return (a_output);
+}
+
+
+char	**dict_store_array_key(char *file, int row, unsigned int len)
+{
+	char			**a_output;
+	char			*bf;
+	int				fd;
+	unsigned int	i;
+	unsigned int	r;
+
+	a_output = cr8_2d_arr(row);
+	bf = cr8_1d_arr(len);
+	i = 0;
+	r = 0;
+	fd = open(file, O_RDONLY);
+	read(fd, bf, len);
+	while (*(bf + i) != '\0')
+	{
+		while (*(bf + i) != '\0' && !ft_in_str(*(bf + i), "0123456789"))
+			i++;
+		a_output[r++] = ft_dup_while_num(bf + i);
+		while (*(bf + i) != '\0' && !ft_in_str(*(bf + i), "\n"))
+			i++;
+	}
+	close(fd);
+	free(bf);
 	return (a_output);
 }
 
 /*********************** DICTIONARY VALUE FUNCTIONS ***********************/
-char	*dict_get_word_from_digit(char **a_key, char **a_value, char *key)
+char *dict_get_word_from_digit(char **a_key, char **a_value, char *key)
 {
-	int	i;
+	int i;
 
 	i = 0;
 	while (a_key[i] != 0)
@@ -259,9 +358,9 @@ char	*dict_get_word_from_digit(char **a_key, char **a_value, char *key)
 	return (0); //If nothing is found
 }
 
-char	*dict_get_digit_from_word(char **a_key, char **a_value, char *value)
+char *dict_get_digit_from_word(char **a_key, char **a_value, char *value)
 {
-	int	i;
+	int i;
 
 	i = 0;
 	while (a_value[i] != 0)
@@ -444,23 +543,22 @@ void	t_printwords(char *file, char *str)
 {
 	int		maxstrlen;
 	int		maxrow;
-	char	**a_digits;
-	char	**a_words;
+	
 	t_map	map;
 
 	//Loop through words by words,
 	//	get largest width (strlen) & height (rows) available
 	dict_get_largest_len_row(file, &maxstrlen, &maxrow);
 	//Store the set of variables into our 2D array
-	map.a_digits = dict_store_array(file, maxrow, maxstrlen, 1);
+	map.a_digits = dict_store_array_key(file, maxrow, maxstrlen);
 	//last digit = 1 means key [left side]
-	map.a_words = dict_store_array(file, maxrow, maxstrlen, 0);
+	map.a_words = dict_store_array_value(file, maxrow, maxstrlen);
 	//last digit = 0 means value [right side]
 	//Process what we've stored to be printed out as words
 	str_to_word(map, str);
 	//Free up all the 2D arrays
-	dict_free_2d_array(a_digits);
-	dict_free_2d_array(a_words);
+	dict_free_2d_array(map.a_digits);
+	dict_free_2d_array(map.a_words);
 }
 
 int	main(int argc, char **argv)

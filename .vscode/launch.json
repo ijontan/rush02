@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Debug",
       "program": "${fileDirname}/${fileBasenameNoExtension}",
-      "args": ["00011"],
+      "args": ["123000123"],
       "stopAtEntry": false,
       "environment": [],
       "externalConsole": false,
