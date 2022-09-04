@@ -327,9 +327,9 @@ int	region_has_value(char *nb, int cd, int nod)
 {
 	int	region_position;
 
-	region_position = (cd / 3) * 3 + 1;
+	region_position = (cd / 3) * 3;
 	//starting position of the rigion checking
-	while (region_position < (cd / 3 + 1) * 4)
+	while (region_position < (cd / 3 + 1) * 3 + 1)
 	{
 		if (nb[nod - region_position] <= '9' && nb[nod
 			- region_position] >= '1')
@@ -340,48 +340,52 @@ int	region_has_value(char *nb, int cd, int nod)
 }
 void	str_to_word(char **a_digits, char **a_words, char *nb)
 {
-	int	cd;
-
-	int nod; //total
-	//int o=0;
+	int cd;  //currnt digits
+	int nod; //total number of digits
+	//(nod - cd) will be the index of current digit checking
 	nod = 0;
 	while (nb[nod])
-		nod++;
-	cd = nod;
-	while (cd > 0)
+		nod++; //counting number of digits
+	cd = nod;  //starts from the biggest digit
+	while (cd > 0 && nb[nod - cd] != 0)
 	{
-		if (nb[nod - cd] != 0)
+		// print basic number "one", "two" etc..
+		// dont print if second number in the region is 1
+		// dont print if currest digit is second number
+		if (!(cd % 3 == 1 && nb[nod - cd - 1] == '1'))
+			if (cd % 3 != 2 && nb[nod - cd] != '0')
+				ft_putstr(dict_get_word_from_digit(a_digits, a_words,
+							get_n_via_digit(nb[nod - cd] - 48)));
+		//if current region has value
+		if (region_has_value(nb, cd, nod))
 		{
-			if (!(cd % 3 == 1 && nb[nod - cd - 1] == '1'))
-				if (cd % 3 != 2 && nb[nod - cd] != '0')
-					ft_putstr(dict_get_word_from_digit(a_digits, a_words,
-								get_n_via_digit(nb[nod - cd] - 48)));
-			if (region_has_value(nb, cd, nod) && cd != 0)
+			//only when current number is the first digit in the region
+			if (cd % 3 == 1)
 			{
-				if (cd % 3 == 1 && cd / 3 > 0)
-				{
-					if (nb[nod - cd - 1] == '1')
-						ft_putstr(dict_get_word_from_digit(a_digits, a_words,
-									get_teenn_via_digit(nb[nod - cd] - 48)));
+				if (nb[nod - cd - 1] == '1')
+					ft_putstr(dict_get_word_from_digit(a_digits, a_words,
+								get_teenn_via_digit(nb[nod - cd] - 48)));
+				if (nb[nod - cd - 1] != '0' && nb[nod - cd - 2] != '0')
 					ft_putchar(' ');
+				if (cd / 3 > 0)
 					ft_putstr(dict_get_word_from_digit(a_digits, a_words,
 								get_10n_via_digit(cd)));
-					ft_putchar(' ');
-				}
-				else if (cd % 3 == 2 && nb[nod - cd] != '1')
-				{
-					ft_putstr(dict_get_word_from_digit(a_digits, a_words,
-								get_tyn_via_digit(nb[nod - cd] - 48)));
-					ft_putchar(' ');
-				}
-				else if (cd % 3 == 0 && nb[nod - cd / 3 * 3] != '0')
-				{
-					ft_putchar(' ');
-					ft_putstr(dict_get_word_from_digit(a_digits, a_words,
-								"100"));
-					if (nb[nod - cd + 1] != '0' || nb[nod - cd + 2] != '0')
-						ft_putstr(" and ");
-				}
+				ft_putchar(' ');
+			}
+			//only when current number is the second digit in the region
+			else if (cd % 3 == 2 && nb[nod - cd] != '1')
+			{
+				ft_putstr(dict_get_word_from_digit(a_digits, a_words,
+							get_tyn_via_digit(nb[nod - cd] - 48)));
+				ft_putchar(' ');
+			}
+			//only when current number is the third digit in the region
+			else if (cd % 3 == 0 && nb[nod - cd] != '0')
+			{
+				ft_putchar(' ');
+				ft_putstr(dict_get_word_from_digit(a_digits, a_words, "100"));
+				if (nb[nod - cd + 1] != '0' || nb[nod - cd + 2] != '0')
+					ft_putstr(" and ");
 			}
 		}
 		cd--;
