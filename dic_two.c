@@ -6,7 +6,7 @@
 /*   By: itan <itan@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/04 18:49:10 by itan              #+#    #+#             */
-/*   Updated: 2022/09/04 18:56:15 by itan             ###   ########.fr       */
+/*   Updated: 2022/09/04 19:08:29 by itan             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,10 @@ char	**dic_value(char *file, int row, unsigned int len, unsigned int r)
 
 char	**dic_key(char *file, int row, unsigned int len, unsigned int r)
 {
-	char **a_output;
-	char *bf;
-	int fd;
-	unsigned int i;
+	char			**a_output;
+	char			*bf;
+	int				fd;
+	unsigned int	i;
 
 	a_output = cr8_2d_arr(row);
 	bf = cr8_1d_arr(len);
